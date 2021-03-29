@@ -20,3 +20,12 @@ ci_2 = Circle(9)
 print(ci_1.get_area_circle())
 print(ci_2.get_area_circle())
 print()
+
+figures = [rect_1, rect_2, sq_1, sq_2, ci_1, ci_2]
+for figure in figures:
+    if isinstance(figure, Square):
+        print(figure.get_area_square())
+    elif isinstance(figure, Circle):
+        print(figure.get_area_circle())
+    else:
+        print(figure.get_area())
