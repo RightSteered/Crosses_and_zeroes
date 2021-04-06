@@ -182,7 +182,7 @@ class Game:
                 a += 1
                 if a > 2000:
                     return None
-                ship = Ship(Dot(randint(0, 5), randint(0, 5)), randint(1, 2), i)
+                ship = Ship(Dot(randint(1, 6), randint(1, 6)), randint(1, 2), i)
                 try:
                     board.add_ship(ship)
                     break
