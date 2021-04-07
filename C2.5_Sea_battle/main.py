@@ -82,8 +82,9 @@ class Board:
         self.ships = []
         self.contours = []
 
-    def outside(self, i):
-        return False if ((0 < i.x <= 6) and (0 < i.y <= 6)) else True
+    @staticmethod
+    def outside(i):
+        return False if (i.x in range(1, 6) and i.y in range(1, 6)) else True
 
     def contour(self, ship, cnt=False):
         contour_ = [(-1, -1), (0, -1), (1, -1),
@@ -96,18 +97,17 @@ class Board:
                 if not (self.outside(i)) and c not in self.used:
                     if cnt:
                         self.board[c.x][c.y] = '0'
-                    self.used.append(c)
+                    self.contours.append(c)
 
     def add_ship(self, ship):
-        for i in ship.dots:
-            if self.outside(i) or i in self.contours or i in self.ships:
+        for cell in ship.dots:
+            if self.outside(cell) or cell in self.contours or cell in self.ships:
                 raise CannotPlaceShip()
-        for i in ship.dots:
-            self.board[i.x][i.y] = "■"
-            self.ships.append(ship)
-            self.contour(ship)
-            self.used.append(i)
-            self.alive += 1
+        self.board[cell.x][cell.y] = "■"
+        self.ships.append(ship)
+        self.contour(ship)
+
+        self.alive += 1
         return self.ships, self.used, self.alive, self.board
 
     def show(self):
@@ -126,7 +126,7 @@ class Board:
         if s in self.used:
             raise UsedCellException()
         for ship in self.ships:
-            if s in ship.dots():
+            if s in ship.dots:
                 self.board[s.x][s.y] == "X"
                 ship.hp -= 1
                 if ship.hp == 0:
@@ -204,7 +204,7 @@ class Game:
                 a += 1
                 if a > 2000:
                     return None
-                ship = Ship(Dot(randint(1, 6), randint(1, 6)), randint(1, 2), i)
+                ship = Ship(Dot(randint(1, self.size), randint(1, self.size)), randint(1, 2), i)
                 try:
                     board.add_ship(ship)
                     break
@@ -253,5 +253,4 @@ class Game:
 
 
 game = Game()
-print(Board.user_board.add_ship())
 game.start()
