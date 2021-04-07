@@ -25,6 +25,11 @@ class CannotPlaceShip(Error):
         return "No suitable space for ship!"
 
 
+class ShipNotCreated(Error):
+    def __str__(self):
+        return "Error while creating ship!"
+
+
 class Dot:
 
     def __init__(self, x, y):
@@ -62,34 +67,36 @@ class Ship:
 
 class Board:
 
-    def __init__(self, hid=False, alive=7, size=6):
+    def __init__(self, hid=False, alive=0, size=6):
         self.hid = hid
         self.alive = alive
         self.size = size
         self.board = [[' ', '1', '2', '3', '4', '5', '6'],
-                      ['1', '.', '.', '.', '.', '.', '.', '.'],
-                      ['2', '.', '.', '.', '.', '.', '.', '.'],
-                      ['3', '.', '.', '.', '.', '.', '.', '.'],
-                      ['4', '.', '.', '.', '.', '.', '.', '.'],
-                      ['5', '.', '.', '.', '.', '.', '.', '.'],
-                      ['6', '.', '.', '.', '.', '.', '.', '.']]
+                      ['1', '.', '.', '.', '.', '.', '.'],
+                      ['2', '.', '.', '.', '.', '.', '.'],
+                      ['3', '.', '.', '.', '.', '.', '.'],
+                      ['4', '.', '.', '.', '.', '.', '.'],
+                      ['5', '.', '.', '.', '.', '.', '.'],
+                      ['6', '.', '.', '.', '.', '.', '.']]
         self.used = []
         self.ships = []
         self.contours = []
 
     def outside(self, i):
-        return False if (0 < i.x <= 6) and (0 < i.y <= 6) else True
+        return False if ((0 < i.x <= 6) and (0 < i.y <= 6)) else True
 
-    def contour(self, ship):
+    def contour(self, ship, cnt=False):
         contour_ = [(-1, -1), (0, -1), (1, -1),
                     (-1, 0), (0, 0), (1, 0),
                     (1, 1), (0, 1), (1, 1)]
         for i in ship.dots:
-            for x, y in contour_:
-                i = Dot(i.x + x, i.y + y)
-                if not (self.outside(i)) and i not in self.used:
-                    self.board[i.x][i.y] = '0'
-                self.contours.append(i)
+            for a, b in contour_:
+                c = Dot(i.x + a, i.y + b)
+                self.contours.append(c)
+                if not (self.outside(i)) and c not in self.used:
+                    if cnt:
+                        self.board[c.x][c.y] = '0'
+                    self.used.append(c)
 
     def add_ship(self, ship):
         for i in ship.dots:
@@ -100,13 +107,18 @@ class Board:
             self.ships.append(ship)
             self.contour(ship)
             self.used.append(i)
+            self.alive += 1
+        return self.ships, self.used, self.alive, self.board
 
     def show(self):
-        if not self.hid:
-            for i in range(7):
-                for j in range(7):
-                    print(f"{self.board[i][j]}" + "|", end='')
-                print()
+        for i in range(1):
+            for j in range(7):
+                if self.hid:
+                    for [a], [b] in self.board:
+                        if self.board[a][b] == "■" or "0":
+                            self.board[a][b] = "."
+                        print(f"{''}" + "|".join(self.board[j]) + "|")
+                print(f"{''}" + "|".join(self.board[j]) + "|")
 
     def shot(self, s):
         if self.outside(s):
@@ -119,7 +131,7 @@ class Board:
                 ship.hp -= 1
                 if ship.hp == 0:
                     self.alive -= 1
-                    self.contour(ship)
+                    self.contour(ship, cnt=True)
                     print("Ship destroyed!")
                 else:
                     print("Ship damaged!")
@@ -149,7 +161,6 @@ class Player:
 
             except Error as e:
                 print(e)
-                self.move()
 
 
 class AI(Player):
@@ -165,17 +176,28 @@ class User(Player):
     def ask(self):
         while True:
             s = input("Specify x and y: ").split()
-            if len(s) != 2 or not isinstance(s, int):
+            if len(s) != 2:
                 raise WrongValueException()
-            x, y = s.__int__()
+            x, y = s
+            if not (x.isdigit()) or not (y.isdigit()):
+                raise WrongValueException()
+            x, y = int(x), int(y)
             return Dot(x, y)
 
 
 class Game:
 
+    def __init__(self, size=6):
+        self.size = size
+        user_board = self.random_board()
+        ai_board = self.random_board()
+        ai_board.hid = True
+        self.ai = AI(ai_board, user_board)
+        self.user = User(user_board, ai_board)
+
     def create_ships(self):
         ships = (3, 2, 2, 1, 1, 1, 1)
-        board = Board(size=6)
+        board = Board(size=self.size)
         a = 0
         for i in ships:
             while True:
@@ -188,20 +210,13 @@ class Game:
                     break
                 except CannotPlaceShip:
                     print(f"Trying to create ship with length {i} one more time")
+                return board
 
     def random_board(self):
         board = None
         while board is None:
             board = self.create_ships()
         return board
-
-    def __init__(self, size=6):
-        self.size = size
-        user_board = self.random_board()
-        ai_board = self.random_board()
-        ai_board.hid = True
-        self.ai = AI(ai_board, user_board)
-        self.user = User(user_board, ai_board)
 
     @staticmethod
     def greet():
@@ -212,12 +227,12 @@ class Game:
         turns = 0
         while True:
             print("User")
-            print(self.user.user_board)
+            self.user.user_board.show()
             print()
             print("#" * 30)
             print()
             print("AI")
-            print(self.ai.ai_board)
+            self.ai.ai_board.show()
             if turns % 2 == 0:
                 print("Specify your shot")
                 repeat = self.user.move()
@@ -238,4 +253,5 @@ class Game:
 
 
 game = Game()
+print(Board.user_board.add_ship())
 game.start()
