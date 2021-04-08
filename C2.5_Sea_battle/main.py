@@ -51,14 +51,16 @@ class Ship:
 
     @property
     def dots(self):
-        ship_cells = []
-        for i in range(self.length):
-            new_x, new_y = self.head.x, self.head.y
-            if self.direction == 1 and self.length != 1:
-                new_x += 1
-            elif self.direction == 2 and self.length != 1:
-                new_y += 1
-            ship_cells.append(Dot(new_x, new_y))
+        ship_cells = [Dot(self.head.x, self.head.y)]
+        if self.length > 1:
+            for i in range(self.length):
+                new_x, new_y = self.head.x, self.head.y
+                if self.direction == 1:
+                    new_x += 1
+                ship_cells.append(Dot(new_x, new_y))
+                if self.direction == 2:
+                    new_y += 1
+                ship_cells.append(Dot(new_x, new_y))
         return ship_cells
 
     def hit(self, hit):
@@ -84,7 +86,7 @@ class Board:
 
     @staticmethod
     def outside(i):
-        return False if (i.x in range(1, 6) and i.y in range(1, 6)) else True
+        return False if (i.x in range(1, 7) and i.y in range(1, 7)) else True
 
     def contour(self, ship, cnt=False):
         contour_ = [(-1, -1), (0, -1), (1, -1),
@@ -93,7 +95,8 @@ class Board:
         for i in ship.dots:
             for a, b in contour_:
                 c = Dot(i.x + a, i.y + b)
-                self.contours.append(c)
+                if c not in self.ships:
+                    self.contours.append(c)
                 if not (self.outside(i)) and c not in self.used:
                     if cnt:
                         self.board[c.x][c.y] = '0'
@@ -103,12 +106,11 @@ class Board:
         for cell in ship.dots:
             if self.outside(cell) or cell in self.contours or cell in self.ships:
                 raise CannotPlaceShip()
-        self.board[cell.x][cell.y] = "■"
+        for cell in ship.dots:
+            self.board[cell.x][cell.y] = "■"
         self.ships.append(ship)
-        self.contour(ship)
-
+        # self.contour(ship)
         self.alive += 1
-        return self.ships, self.used, self.alive, self.board
 
     def show(self):
         for i in range(1):
@@ -117,7 +119,7 @@ class Board:
                     for [a], [b] in self.board:
                         if self.board[a][b] == "■" or "0":
                             self.board[a][b] = "."
-                        print(f"{''}" + "|".join(self.board[j]) + "|")
+                        return self.board
                 print(f"{''}" + "|".join(self.board[j]) + "|")
 
     def shot(self, s):
@@ -127,7 +129,7 @@ class Board:
             raise UsedCellException()
         for ship in self.ships:
             if s in ship.dots:
-                self.board[s.x][s.y] == "X"
+                self.board[s.x][s.y] = "X"
                 ship.hp -= 1
                 if ship.hp == 0:
                     self.alive -= 1
@@ -137,7 +139,7 @@ class Board:
                     print("Ship damaged!")
                 return True
             else:
-                self.board[s.x][s.y] == "0"
+                self.board[s.x][s.y] = "0"
                 print("Shot missed!")
                 return False
         self.used.append([s.x][s.y])
@@ -204,13 +206,14 @@ class Game:
                 a += 1
                 if a > 2000:
                     return None
-                ship = Ship(Dot(randint(1, self.size), randint(1, self.size)), randint(1, 2), i)
+                ship = Ship((Dot(randint(1, self.size), randint(1, self.size))), randint(1, 2), i)
                 try:
                     board.add_ship(ship)
                     break
                 except CannotPlaceShip:
                     print(f"Trying to create ship with length {i} one more time")
-                return board
+
+        return board
 
     def random_board(self):
         board = None
