@@ -105,7 +105,7 @@ class Board:
                         for b in range(7):
                             if self.map[a][b] == "■":
                                 self.map[a][b] = "."
-                print(f"{''}" + "|".join(self.map[j]) + "|")
+                print("|".join(self.map[j]) + "|")
 
     def hit(self, s):
         if self.outside(s):
