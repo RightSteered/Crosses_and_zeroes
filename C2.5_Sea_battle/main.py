@@ -55,24 +55,29 @@ class Ship:
 
 
 class Board:
-    def __init__(self, hid=False, size=6):
+    def __init__(self, hid=False, size=10):
         self.size = size
         self.hid = hid
-        self.alive = 7
-        self.map = [[' ', '1', '2', '3', '4', '5', '6'],
-                    ['1', '.', '.', '.', '.', '.', '.'],
-                    ['2', '.', '.', '.', '.', '.', '.'],
-                    ['3', '.', '.', '.', '.', '.', '.'],
-                    ['4', '.', '.', '.', '.', '.', '.'],
-                    ['5', '.', '.', '.', '.', '.', '.'],
-                    ['6', '.', '.', '.', '.', '.', '.']]
+        self.alive = 10
+        self.map = [['  ', '1', '2', '3', '4', '5', '6', '7', '8', '9', '10'],
+                    ['1 ', '.', '.', '.', '.', '.', '.', '.', '.', '.', '.'],
+                    ['2 ', '.', '.', '.', '.', '.', '.', '.', '.', '.', '.'],
+                    ['3 ', '.', '.', '.', '.', '.', '.', '.', '.', '.', '.'],
+                    ['4 ', '.', '.', '.', '.', '.', '.', '.', '.', '.', '.'],
+                    ['5 ', '.', '.', '.', '.', '.', '.', '.', '.', '.', '.'],
+                    ['6 ', '.', '.', '.', '.', '.', '.', '.', '.', '.', '.'],
+                    ['7 ', '.', '.', '.', '.', '.', '.', '.', '.', '.', '.'],
+                    ['8 ', '.', '.', '.', '.', '.', '.', '.', '.', '.', '.'],
+                    ['9 ', '.', '.', '.', '.', '.', '.', '.', '.', '.', '.'],
+                    ['10', '.', '.', '.', '.', '.', '.', '.', '.', '.', '.']
+                    ]
 
         self.used = []
         self.ships = []
 
     @staticmethod
     def outside(i):
-        return False if (i.x in range(1, 7) and i.y in range(1, 7)) else True
+        return False if (i.x in range(1, 11) and i.y in range(1, 11)) else True
 
     def add_ship(self, ship):
 
@@ -99,10 +104,10 @@ class Board:
 
     def show(self):
         for i in range(1):
-            for j in range(7):
+            for j in range(11):
                 if self.hid:
-                    for a in range(7):
-                        for b in range(7):
+                    for a in range(11):
+                        for b in range(11):
                             if self.map[a][b] == "■":
                                 self.map[a][b] = "."
                 print("|".join(self.map[j]) + "|")
@@ -156,7 +161,7 @@ class Player:
 
 class AI(Player):
     def ask(self):
-        cords = Dot(randint(1, 6), randint(1, 6))
+        cords = Dot(randint(1, 10), randint(1, 10))
         print(f"AI shoots {cords.x}, {cords.y}")
         return cords
 
@@ -175,7 +180,7 @@ class User(Player):
 
 
 class Game:
-    def __init__(self, size=6):
+    def __init__(self, size=10):
         self.size = size
         board_1 = self.random_board()
         board_2 = self.random_board()
@@ -184,7 +189,7 @@ class Game:
         self.ai = AI(board_2, board_1)
 
     def create_ships(self):
-        ships = (3, 2, 2, 1, 1, 1, 1)
+        ships = (4, 3, 3, 2, 2, 2, 1, 1, 1, 1)
         board = Board(size=self.size)
         a = 0
         for i in ships:
