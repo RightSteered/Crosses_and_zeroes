@@ -58,10 +58,10 @@ def start_convert(message):
             e = convert()
         finally:
             result = APIRequest.get_prices(base, quote, amount)
-            return result
+            return values, result
 
     print(convert(message))
-    bot.reply_to(message, f"Стоимость {amount} {base} в {quote} составляет {convert(message)})
+    bot.reply_to(message, f"{convert(message)}")
 
 
 bot.polling(none_stop=True)
