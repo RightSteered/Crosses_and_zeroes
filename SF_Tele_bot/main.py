@@ -9,6 +9,7 @@ keys = {
     "доллар": "USD",
     "рубль": "RUB"
 }
+conv = False
 
 
 @bot.message_handler(commands=["start", "help"])
@@ -34,34 +35,31 @@ def start_convert(message):
     spec = "Введите валюту обмена, целевую валюту и сумму через пробел"
     bot.reply_to(message, spec)
 
-    @bot.message_handler(content_types=["bot_command, text"])
+    @bot.message_handler(content_types=["text"])
     def convert(message: telebot.types.Message):
-        values = list(message.text.lower().split(" "))
+        values = message.text.lower().split(" ")
         if len(values) > 3:
             bot.reply_to(message, ValuesException("Ошибка! Проверьте заданные параметры!"))
             raise ValuesException("Ошибка! Проверьте заданные параметры!")
 
+
+
         elif len(values) == 2:
             amount = 1
             values.append(amount)
+
         base, quote, amount = values
 
-        try:
-            for i in keys.keys():
-                if base == i:
-                    base = keys[i]
-                elif quote == i:
-                    quote = keys[i]
+        for i in keys.keys():
+            if base == i:
+                base = keys[i]
+            elif quote == i:
+                quote = keys[i]
 
-        except APIException("Неизвестная валюта") as e:
-            bot.reply_to(message, APIException)
-            e = convert()
-        finally:
-            result = APIRequest.get_prices(base, quote, amount)
-            return values, result
+        base_, quote_ = APIRequest.get_prices(base, quote)
 
-    print(convert(message))
-    bot.reply_to(message, f"{convert(message)}")
+        result = (base_ * int(amount)) / quote_
+        bot.reply_to(message, result)
 
 
-bot.polling(none_stop=True)
+bot.polling()
