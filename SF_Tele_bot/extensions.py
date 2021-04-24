@@ -12,7 +12,6 @@ class ValuesException(Exception):
 
 
 class APIRequest:
-
     def __init__(self):
         pass
 

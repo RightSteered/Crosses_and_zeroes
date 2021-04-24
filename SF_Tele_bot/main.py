@@ -48,7 +48,7 @@ def start_convert(message):
         base, quote, amount = values
 
         if not amount.isdigit():
-            bot.reply_to(message, ValuesException(f"Указана неверная сумма {amount}!\n"
+            bot.reply_to(message, ValuesException(f"Указана неверная сумма: {amount}!\n"
                                                   f"Установлено значение по умолчанию."))
             amount = 1
 
