@@ -1,17 +1,9 @@
 import telebot
-from bot_config import token
+from bot_config import keys, token
 from extensions import *
 
 bot = telebot.TeleBot(token)
-keys = {
-    "рубль": "RUB",
-    "фунт": "GBP",
-    "евро": "EUR",
-    "доллар": "USD",
-    "гривна": "UAH",
-    "юань": "CNY",
-    "иена": "JPY"
-}
+
 
 
 @bot.message_handler(commands=["start", "help"])
@@ -46,6 +38,10 @@ def start_convert(message):
         if len(values) == 2:  # Установка значения по умолчанию
             amount = "1"
             values.append(amount)
+
+        if len(values) < 2:
+            bot.reply_to(message, "Задано недостаточно параметров!")
+            raise ValuesException("Задано недостаточно параметров!")
 
         base, quote, amount = values
 
