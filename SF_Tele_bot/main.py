@@ -7,7 +7,9 @@ keys = {
     "фунт": "GBP",
     "евро": "EUR",
     "доллар": "USD",
-    "рубль": "RUB"
+    "рубль": "RUB",
+    "юань": "CNY",
+    "иена": "JPY"
 }
 conv = False
 
@@ -63,10 +65,14 @@ def start_convert(message):
             elif quote == i:
                 quote = keys[i]
 
-        base_, quote_ = APIRequest.get_prices(base, quote)
+        base_, base_nominal, quote_, quote_nominal = APIRequest.get_prices(base, quote)
+
+        base_ = base_ / base_nominal
+        quote_ = quote_ / quote_nominal
 
         result = round((base_ * int(amount) / quote_), 2)
         bot.reply_to(message, f"Стоимость {amount} {base} составляет {result} {quote}.")
+
 
 
 bot.polling()

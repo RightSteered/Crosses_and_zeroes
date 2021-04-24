@@ -20,17 +20,22 @@ class APIRequest:
         price = requests.get(API_url)
         if base == "RUB":
             base_ = 1
+            base_nominal = 1
             quote_ = json.loads(price.content)["Valute"][quote]["Value"]
-            return base_, quote_
+            quote_nominal = json.loads(price.content)["Valute"][quote]["Nominal"]
+            return base_, base_nominal, quote_, quote_nominal
 
         elif quote == "RUB":
             base_ = json.loads(price.content)["Valute"][base]["Value"]
+            base_nominal = json.loads(price.content)["Valute"][base]["Nominal"]
             quote_ = 1
-            return base_, quote_
+            quote_nominal = 1
+            return base_, base_nominal, quote_, quote_nominal
 
         else:
             base_ = json.loads(price.content)["Valute"][base]["Value"]
+            base_nominal = json.loads(price.content)["Valute"][base]["Nominal"]
             quote_ = json.loads(price.content)["Valute"][quote]["Value"]
-            return base_, quote_
+            quote_nominal = json.loads(price.content)["Valute"][quote]["Nominal"]
 
-
+            return base_, base_nominal, quote_, quote_nominal
