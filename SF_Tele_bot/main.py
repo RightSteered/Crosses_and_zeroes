@@ -42,7 +42,7 @@ def start_convert(message):
         while len(values) > 3:
             values.pop(-1)
         if len(values) == 2:
-            amount = 1
+            amount = "1"
             values.append(amount)
 
         base, quote, amount = values
