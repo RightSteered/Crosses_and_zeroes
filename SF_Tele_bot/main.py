@@ -41,7 +41,6 @@ def start_convert(message):
 
         try:
             if len(values) < 2:
-
                 raise ApiException("Задано недостаточно параметров!")
         except ApiException:
             bot.reply_to(message, "Задано недостаточно параметров!")
@@ -61,7 +60,6 @@ def start_convert(message):
                     amount = 1
                 try:
                     if base not in keys.keys():
-
                         raise ApiException("Неизвестная валюта!")
                 except ApiException:
                     bot.reply_to(message, f"Неизвестная валюта {base}!")
@@ -69,12 +67,10 @@ def start_convert(message):
 
                     try:
                         if quote not in keys.keys():
-
                             raise ApiException("Неизвестная валюта!")
                     except ApiException:
                         bot.reply_to(message, f"Неизвестная валюта {quote}!")
                     else:
-
 
                         for i in keys.keys():
                             if base == i:
