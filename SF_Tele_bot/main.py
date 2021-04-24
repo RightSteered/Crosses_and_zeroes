@@ -37,18 +37,25 @@ def start_convert(message):
 
     @bot.message_handler(content_types=["text"])
     def convert(message: telebot.types.Message):
-        values = message.text.lower().split(" ")
-        if len(values) > 3:
-            bot.reply_to(message, ValuesException("Ошибка! Проверьте заданные параметры!"))
-            raise ValuesException("Ошибка! Проверьте заданные параметры!")
+        values = list(message.text.lower().split(" "))
 
-
-
-        elif len(values) == 2:
+        while len(values) > 3:
+            values.pop(-1)
+        if len(values) == 2:
             amount = 1
             values.append(amount)
 
         base, quote, amount = values
+
+        if not amount.isdigit():
+            bot.reply_to(message, ValuesException(f"Указана неверная сумма {amount}!\n"
+                                                  f"Установлено значение по умолчанию."))
+            amount = 1
+
+        if base not in keys.keys():
+            bot.reply_to(message, APIException(f"Неизвестная валюта {base}!"))
+        if quote not in keys.keys():
+            bot.reply_to(message, APIException(f"Неизвестная валюта {quote}!"))
 
         for i in keys.keys():
             if base == i:
@@ -58,8 +65,8 @@ def start_convert(message):
 
         base_, quote_ = APIRequest.get_prices(base, quote)
 
-        result = (base_ * int(amount)) / quote_
-        bot.reply_to(message, result)
+        result = round((base_ * int(amount) / quote_), 2)
+        bot.reply_to(message, f"Стоимость {amount} {base} составляет {result} {quote}.")
 
 
 bot.polling()
