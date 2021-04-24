@@ -12,7 +12,6 @@ keys = {
     "юань": "CNY",
     "иена": "JPY"
 }
-conv = False
 
 
 @bot.message_handler(commands=["start", "help"])
@@ -44,21 +43,27 @@ def start_convert(message):
 
         while len(values) > 3:
             values.pop(-1)
-        if len(values) == 2:
+        if len(values) == 2:  # Установка значения по умолчанию
             amount = "1"
             values.append(amount)
 
         base, quote, amount = values
 
-        if not amount.isdigit():
-            bot.reply_to(message, ValuesException(f"Указана неверная сумма: {amount}!\n"
-                                                  f"Установлено значение по умолчанию."))
+        if base == quote:
+            bot.reply_to(message, ValuesException(f"Нельзя конвертировать {base} в {quote}!"))
+            raise ValuesException()
+
+        if not amount.isdigit() or int(amount) <= 0:
+            bot.reply_to(message, f"Указана неверная сумма: {amount}!\n"
+                                  f"Установлено значение по умолчанию.")
             amount = 1
 
         if base not in keys.keys():
-            bot.reply_to(message, APIException(f"Неизвестная валюта {base}!"))
+            bot.reply_to(message, ApiException(f"Неизвестная валюта {base}!"))
+            raise ApiException("Неизвестная валюта!")
         if quote not in keys.keys():
-            bot.reply_to(message, APIException(f"Неизвестная валюта {quote}!"))
+            bot.reply_to(message, ApiException(f"Неизвестная валюта {quote}!"))
+            raise ApiException("Неизвестная валюта!")
 
         for i in keys.keys():
             if base == i:
@@ -75,4 +80,4 @@ def start_convert(message):
         bot.reply_to(message, f"Стоимость {amount} {base} составляет {result} {quote}.")
 
 
-bot.polling()
+bot.polling(none_stop=True)

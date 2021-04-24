@@ -3,7 +3,7 @@ import json
 from bot_config import API_url
 
 
-class APIException(Exception):
+class ApiException(Exception):
     pass
 
 
