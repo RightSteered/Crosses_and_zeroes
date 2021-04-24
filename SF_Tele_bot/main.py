@@ -30,6 +30,7 @@ def start_convert(message):
 
     @bot.message_handler(content_types=["text"])
     def convert(message: telebot.types.Message):
+
         values = list(message.text.lower().split(" "))
 
         while len(values) > 3:
@@ -38,41 +39,56 @@ def start_convert(message):
             amount = "1"
             values.append(amount)
 
-        if len(values) < 2:
+        try:
+            if len(values) < 2:
+
+                raise ApiException("Задано недостаточно параметров!")
+        except ApiException:
             bot.reply_to(message, "Задано недостаточно параметров!")
-            raise ValuesException("Задано недостаточно параметров!")
+        else:
+            base, quote, amount = values
 
-        base, quote, amount = values
+            try:
+                if base == quote:
+                    raise ApiException()
+            except ApiException:
+                bot.reply_to(message, f"Нельзя конвертировать {base} в {quote}!")
+            else:
 
-        if base == quote:
-            bot.reply_to(message, f"Нельзя конвертировать {base} в {quote}!")
-            raise ValuesException()
+                if not amount.isdigit() or int(amount) <= 0:
+                    bot.reply_to(message, f"Указана неверная сумма: {amount}!\n"
+                                          f"Установлено значение по умолчанию.")
+                    amount = 1
+                try:
+                    if base not in keys.keys():
 
-        if not amount.isdigit() or int(amount) <= 0:
-            bot.reply_to(message, f"Указана неверная сумма: {amount}!\n"
-                                  f"Установлено значение по умолчанию.")
-            amount = 1
+                        raise ApiException("Неизвестная валюта!")
+                except ApiException:
+                    bot.reply_to(message, f"Неизвестная валюта {base}!")
+                else:
 
-        if base not in keys.keys():
-            bot.reply_to(message, f"Неизвестная валюта {base}!")
-            raise ApiException("Неизвестная валюта!")
-        if quote not in keys.keys():
-            bot.reply_to(message, f"Неизвестная валюта {quote}!")
-            raise ApiException("Неизвестная валюта!")
+                    try:
+                        if quote not in keys.keys():
 
-        for i in keys.keys():
-            if base == i:
-                base = keys[i]
-            elif quote == i:
-                quote = keys[i]
+                            raise ApiException("Неизвестная валюта!")
+                    except ApiException:
+                        bot.reply_to(message, f"Неизвестная валюта {quote}!")
+                    else:
 
-        base_, base_nominal, quote_, quote_nominal = APIRequest.get_prices(base, quote)
 
-        base_ = base_ / base_nominal
-        quote_ = quote_ / quote_nominal
+                        for i in keys.keys():
+                            if base == i:
+                                base = keys[i]
+                            elif quote == i:
+                                quote = keys[i]
 
-        result = round((base_ * int(amount) / quote_), 2)
-        bot.reply_to(message, f"Стоимость {amount} {base} составляет {result} {quote}.")
+                        base_, base_nominal, quote_, quote_nominal = APIRequest.get_prices(base, quote)
+
+                        base_ = base_ / base_nominal
+                        quote_ = quote_ / quote_nominal
+
+                        result = round((base_ * int(amount) / quote_), 2)
+                        bot.reply_to(message, f"Стоимость {amount} {base} составляет {result} {quote}.")
 
 
 bot.polling(none_stop=True)
