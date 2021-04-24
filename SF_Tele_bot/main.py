@@ -16,10 +16,10 @@ conv = False
 
 @bot.message_handler(commands=["start", "help"])
 def start(message):
-    man = "Для начала конвертации введите данные в следующем порядке:\n" \
+    man = "Для начала конвертации введите данные в следующем порядке в любом регистре:\n" \
           "1. Валюта, которую нужно сконвертировать\n2. Валюта, в которую нужно сконвертировать\n" \
           "3. Сумма конвертации (по умолчанию 1)\n" \
-          "разделите вводимые данные пробелом.\n\nСписок доступных валют: /values\n" "Начать конвертацию: /convert"
+          "разделите вводимые данные пробелом.\n \nСписок доступных валют: /values\n" "Начать конвертацию: /convert"
 
     bot.reply_to(message, man)
 
@@ -72,7 +72,6 @@ def start_convert(message):
 
         result = round((base_ * int(amount) / quote_), 2)
         bot.reply_to(message, f"Стоимость {amount} {base} составляет {result} {quote}.")
-
 
 
 bot.polling()
