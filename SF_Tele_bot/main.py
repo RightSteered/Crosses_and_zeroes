@@ -5,7 +5,6 @@ from extensions import *
 bot = telebot.TeleBot(token)
 
 
-
 @bot.message_handler(commands=["start", "help"])
 def start(message):
     man = "Для начала конвертации введите данные в следующем порядке в любом регистре:\n" \
@@ -46,7 +45,7 @@ def start_convert(message):
         base, quote, amount = values
 
         if base == quote:
-            bot.reply_to(message, ValuesException(f"Нельзя конвертировать {base} в {quote}!"))
+            bot.reply_to(message, f"Нельзя конвертировать {base} в {quote}!")
             raise ValuesException()
 
         if not amount.isdigit() or int(amount) <= 0:
@@ -55,10 +54,10 @@ def start_convert(message):
             amount = 1
 
         if base not in keys.keys():
-            bot.reply_to(message, ApiException(f"Неизвестная валюта {base}!"))
+            bot.reply_to(message, f"Неизвестная валюта {base}!")
             raise ApiException("Неизвестная валюта!")
         if quote not in keys.keys():
-            bot.reply_to(message, ApiException(f"Неизвестная валюта {quote}!"))
+            bot.reply_to(message, f"Неизвестная валюта {quote}!")
             raise ApiException("Неизвестная валюта!")
 
         for i in keys.keys():
