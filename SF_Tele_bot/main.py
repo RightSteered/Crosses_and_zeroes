@@ -4,10 +4,11 @@ from extensions import *
 
 bot = telebot.TeleBot(token)
 keys = {
+    "рубль": "RUB",
     "фунт": "GBP",
     "евро": "EUR",
     "доллар": "USD",
-    "рубль": "RUB",
+    "гривна": "UAH",
     "юань": "CNY",
     "иена": "JPY"
 }
