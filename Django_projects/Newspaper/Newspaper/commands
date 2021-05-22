@@ -76,3 +76,11 @@ au2 = Author.objects.get(id=2)
 
 au1.update_rating()
 au2.update_rating()
+
+Author.objects.all().order_by('-user_rating').values('user_name', 'user_rating')[0]
+
+Post.objects.all().order_by('-rating').values('created', 'author', 'rating', 'title', 'text')[0]
+
+bestPost = Post.objects.all().order_by('-rating')[0]
+
+Comment.objects.filter(commentPost = bestPost).values('commentDate', 'commentAuthor', 'commentRating', 'commentText')
