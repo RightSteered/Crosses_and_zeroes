@@ -1,7 +1,7 @@
 from cat_class import Cats
 
-cat_list = [Cats(name="Baron", sex="Male", age=2),
-            Cats(name="Sam", sex="Male", age=2)]
+all_cats = [Cats("Барон", "Мальчик", 2),
+            Cats("Сэм", "Мальчик", 2)]
 
-for cats in cat_list:
+for cats in all_cats:
     cats.print_cats()

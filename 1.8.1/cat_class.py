@@ -13,6 +13,7 @@ class Cats:
     def get_age(self):
         return self.age
 
+
     def print_cats(self):
         print(self.name)
         print(self.sex)

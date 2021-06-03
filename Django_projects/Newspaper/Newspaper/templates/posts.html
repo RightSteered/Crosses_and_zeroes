@@ -1,0 +1,35 @@
+{% extends 'flatpages/default.html' %}
+
+{% load custom_filters %}
+
+{% block title %}
+Post
+{% endblock title %}
+
+{% block content %}
+    <h1>Последние статьи</h1>
+    <h3>Всего статей: {{ posts | length }}</h3>
+<hr> {% if posts %}
+{% for post in posts %}
+<table>
+    <tr>
+    <td>
+
+        <h1>{{ post.title }}</h1>
+        <p style="text-align: left;">{{ post.created | date:'d M Y, H:m'}} {{post.author.user_name}}</p>
+        <h2>{{ post.text | truncatewords:20 }}</h2>
+        <br>
+    </td>
+    <td>
+
+    </td>
+    <td>
+
+    </td>
+
+    </tr>
+</table>
+{% endfor %}
+{% endif %}
+
+{% endblock content %}
