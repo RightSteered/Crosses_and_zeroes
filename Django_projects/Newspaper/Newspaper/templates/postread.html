@@ -9,9 +9,8 @@ Posts
 {% block content %}
 <h1>{{ post.title }}</h1>
 <p style="text-align: left;">{{ post.created | date:'d M Y, H:m'}} {{post.author.user_name}}</p>
-{% for word in post.text %}
-{{ post.text | Censor : word }}
-{% endfor %}
+{{ post.text }}
+
 <tr>
     <p style="text-align: left;">{{ post.commentDate | date:'d M Y, H:m'}} {{post.commentAuthor.user_name}}</p>
 </tr>

@@ -1,13 +1,10 @@
 from django import template
-import os
 
 register = template.Library()
 
 
-@register.filter(name='Censor')
+@register.filter
 def censor(word):
-    with open('bad_words.txt') as f:
-        for word in f:
-            if word:
-                word = '(CENSORED)'
-    return word
+    with open("bad_words.txt", 'r') as f:
+        f.readlines()
+        return f
