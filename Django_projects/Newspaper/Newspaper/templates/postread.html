@@ -7,9 +7,10 @@ Posts
 {% endblock title %}
 
 {% block content %}
-<h1>{{ post.title }}</h1>
+<h1>{{ post.title | censor}}</h1>
 <p style="text-align: left;">{{ post.created | date:'d M Y, H:m'}} {{post.author.user_name}}</p>
-{{ post.text }}
+
+{{ post.text | censor }}
 
 <tr>
     <p style="text-align: left;">{{ post.commentDate | date:'d M Y, H:m'}} {{post.commentAuthor.user_name}}</p>
