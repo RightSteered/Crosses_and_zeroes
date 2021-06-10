@@ -3,14 +3,19 @@
 {% load custom_filters %}
 
 {% block title %}
-Post
+Последние статьи
 {% endblock title %}
 
 {% block content %}
+<form method="GET">
+    {{ filter.form }}
+    Дата:<input type="date">
+    <input type="submit" value="Поиск">
+</form>
     <h1>Последние статьи</h1>
     <h3>Всего статей: {{ posts | length }}</h3>
 <hr> {% if posts %}
-{% for post in posts %}
+{% for post in filter.qs %}
 <table>
     <tr>
     <td>
@@ -19,11 +24,6 @@ Post
         <p style="text-align: left;">{{ post.created | date:'d M Y, H:m'}} {{post.author.user_name}}</p>
         <h2>{{ post.text | truncatewords:20 }}</h2>
         <br>
-    </td>
-    <td>
-
-    </td>
-    <td>
 
     </td>
 
@@ -31,5 +31,38 @@ Post
 </table>
 {% endfor %}
 {% endif %}
+<div class="pagination">
+    <span class="step-links">
+        {% if page_obj.has_previous %}
+            <a href="?page=1">&laquo; first</a>
+            <a href="?page={{ page_obj.previous_page_number }}">previous</a>
+        {% endif %}
+
+        <span class="current">
+            Страница {{ page_obj.number }} из {{ page_obj.paginator.num_pages }}.
+        </span>
+
+        {% if page_obj.has_next %}
+            <a href="?page={{ page_obj.next_page_number }}">next</a>
+            <a href="?page={{ page_obj.paginator.num_pages }}">last &raquo;</a>
+        {% endif %}
+    </span>
+</div>
+<form method="POST">
+    {% csrf_token %}
+    <select name="postCategory" size="1">
+        {% for cat in category.cat_id %}
+        <option value="cat_id.id">
+        {{ cat_id.name }}
+        </option>
+        {% endfor %}
+    </select>
+    <label for="">Заголовок</label>
+    <input name="title" type="text"> <br>
+    <label for="text">Текст статьи</label>
+    <input name="text" type="text" size="110">
+    <input type="submit", value="Опубликовать">
+
+</form>
 
 {% endblock content %}

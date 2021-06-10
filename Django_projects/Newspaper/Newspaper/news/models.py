@@ -25,7 +25,7 @@ class Category(models.Model):
 
 
 class Post(models.Model):
-    author = models.ForeignKey(Author, on_delete=models.CASCADE)
+    author = models.ForeignKey(Author, on_delete=models.CASCADE, default='1')
     NEWS = 'NW'
     ARTICLE = 'ART'
     CATEGORY_CHOICES = [

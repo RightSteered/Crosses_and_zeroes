@@ -1,0 +1,18 @@
+{% extends 'flatpages/default.html' %}
+
+{% block title %}
+Создать статью
+{% endblock title %}
+
+{% block content %}
+<form method="POST">
+    {% csrf_token %}
+    <label for="">Заголовок</label>
+    <input name="title" type="text"> <br>
+    <label for="text">Текст статьи</label>
+    <input name="text" type="text" size="110">
+    <input type="submit", value="Опубликовать">
+
+</form>
+
+{% endblock content %}

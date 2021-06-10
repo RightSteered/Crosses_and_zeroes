@@ -1,7 +1,10 @@
 from django.shortcuts import render
-from django.views.generic import ListView, DetailView
+from django.views.generic import ListView, DetailView, CreateView
 from .models import Author, Post, Category, Comment
+from django.core.paginator import Paginator
+from .filters import PostFilter
 import datetime
+from .forms import Newpost
 
 
 class PostList(ListView):
@@ -9,10 +12,12 @@ class PostList(ListView):
     template_name = 'posts.html'
     context_object_name = 'posts'
     queryset = Post.objects.all().order_by('-id')
+    paginate_by = 10
 
     def get_context_data(self, *, object_list=None, **kwargs):
         context = super().get_context_data(**kwargs)
         context['time_now'] = datetime.datetime.now(tz=None)
+        context['filter'] = PostFilter(self.request.GET, queryset=self.get_queryset())
         return context
 
 
@@ -44,3 +49,17 @@ class CatList(ListView):
 class Comments(DetailView):
     model = Comment
     context_object_name = 'comments'
+
+
+class NewPost(ListView):
+    model = Post
+    template_name = 'newpost.html'
+
+    def post(self, request, *args, **kwargs):
+
+        title = request.POST['title']
+        text = request.POST['text']
+
+        newpost = Post(title = title, text=text)
+        newpost.save()
+        return super().get(request, *args, **kwargs)
