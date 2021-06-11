@@ -6,18 +6,11 @@
 
 {% block content %}
 <h2>Вы действительно хотите удалить статью?</h2>
-<table>
 
-    <tr>
-        <td>
-            {{ post.title }}
-        </td>
-        <td>
-            {{ post.text | truncatewords:15 }}
-        </td>
+<p style="text-align:left"><h3>{{ post.title }}</h3>
+<br>
+<p style="text-align:left">{{ post.text | truncatewords:15 }}</p>
 
-    </tr>
-</table>
 
 <form method="POST">
     {% csrf_token %}

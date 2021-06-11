@@ -63,6 +63,7 @@ class CreatePost(CreateView):
 
 
 class EditPost(UpdateView):
+    model = Post
     template_name = 'newpost.html'
     form_class = Newpost
     queryset = Post.objects.all()
@@ -73,6 +74,7 @@ class EditPost(UpdateView):
 
 
 class DeletePost(DeleteView):
+    model = Post
     template_name = 'delpost.html'
     queryset = Post.objects.all()
     success_url = '/news/'

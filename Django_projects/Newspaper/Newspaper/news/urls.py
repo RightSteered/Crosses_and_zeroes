@@ -24,6 +24,6 @@ urlpatterns = [
     path('authors/<int:pk>', AuthorDesc.as_view()),
     path('news/<int:pk>', PostView.as_view()),
     path('news/add/', CreatePost.as_view()),
-    path('news/edit/<int:pk>', EditPost.as_view()),
-    path('news/delete/<int:pk>', DeletePost.as_view())
+    path('news/edit/<int:pk>', EditPost.as_view(), name='newpost'),
+    path('news/delete/<int:pk>', DeletePost.as_view(), name='delpost')
 ]
