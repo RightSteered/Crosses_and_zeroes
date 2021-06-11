@@ -7,10 +7,7 @@
 {% block content %}
 <form method="POST">
     {% csrf_token %}
-    <label for="">Заголовок</label>
-    <input name="title" type="text"> <br>
-    <label for="text">Текст статьи</label>
-    <input name="text" type="text" size="110">
+    {{ form }}
     <input type="submit", value="Опубликовать">
 
 </form>

@@ -5,7 +5,6 @@ class Newpost(ModelForm):
     class Meta:
         model = Post
         fields = (
-            'postCategory',
             'title',
             'text'
         )

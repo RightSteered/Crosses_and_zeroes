@@ -21,8 +21,10 @@
     <tr>
     <td>
 
-        <a href="{{post.id}}"> <h1>{{ post.title | censor}}</h1></a>
+        <a href="{{ post.id }}"> <h1>{{ post.title | censor}}</h1></a>
         <p style="text-align: left;">{{ post.created | date:'d M Y, H:m'}} {{post.author.user_name}}</p>
+        <p style="text-align: left;"><a href="{% url 'newpost' post.id %}">Редактировать</a>
+            <a href="{% url 'delpost' post.id %}">Удалить</a> </p>
         <h2>{{ post.text | truncatewords:20 }}</h2>
         <br>
 

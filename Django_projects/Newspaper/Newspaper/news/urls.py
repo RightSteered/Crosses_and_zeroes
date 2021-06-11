@@ -23,5 +23,7 @@ urlpatterns = [
     path('categories/', CatList.as_view()),
     path('authors/<int:pk>', AuthorDesc.as_view()),
     path('news/<int:pk>', PostView.as_view()),
-    path('news/add/', CreatePost.as_view())
+    path('news/add/', CreatePost.as_view()),
+    path('news/edit/<int:pk>', EditPost.as_view()),
+    path('news/delete/<int:pk>', DeletePost.as_view())
 ]

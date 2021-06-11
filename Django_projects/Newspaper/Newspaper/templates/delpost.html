@@ -1,0 +1,25 @@
+{% extends 'flatpages/default.html' %}
+
+{% block title %}
+Удалить статью
+{% endblock title %}
+
+{% block content %}
+<h2>Вы действительно хотите удалить статью?</h2>
+<table>
+
+    <tr>
+        <td>
+            {{ post.title }}
+        </td>
+        <td>
+            {{ post.text | truncatewords:15 }}
+        </td>
+
+    </tr>
+</table>
+
+<form method="POST">
+    {% csrf_token %}
+    <input type="submit" value="Подтвердить"></form>
+{% endblock content %}

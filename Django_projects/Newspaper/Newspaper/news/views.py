@@ -20,11 +20,16 @@ class PostList(ListView):
         context['filter'] = PostFilter(self.request.GET, queryset=self.get_queryset())
         return context
 
+    def new(self, request, *args, **kwargs):
+        form = self.form_class(request.POST)
+        if form.is_valid:
+            form.save()
+        return super().get(request, *args, **kwargs)
+
 
 class PostView(DetailView):
-    model = Post
     template_name = 'postread.html'
-    context_object_name = 'post'
+    queryset = Post.objects.all()
 
 
 class AuthorList(ListView):
@@ -51,18 +56,29 @@ class Comments(DetailView):
     context_object_name = 'comments'
 
 
-class CreatePost(ListView):
-    model = Post
+class CreatePost(CreateView):
+    form_class = Newpost
     template_name = 'newpost.html'
+    queryset = Post.objects.all()
 
-    def post(self, request, *args, **kwargs):
 
-        title = request.POST['title']
-        text = request.POST['text']
+class EditPost(UpdateView):
+    template_name = 'newpost.html'
+    form_class = Newpost
+    queryset = Post.objects.all()
 
-        newpost = Post(title = title, text=text)
-        newpost.save()
-        return super().get(request, *args, **kwargs)
+    def get_post(self, **kwargs):
+        id = self.kwargs.get('pk')
+        return Post.objects.get(pk=id)
+
+
+class DeletePost(DeleteView):
+    template_name = 'delpost.html'
+    queryset = Post.objects.all()
+    success_url = '/news/'
+
+
+
 
 
 # class DeletePost(DeleteView):
