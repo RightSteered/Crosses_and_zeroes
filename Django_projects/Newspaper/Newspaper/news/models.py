@@ -51,7 +51,7 @@ class Post(models.Model):
         return self.text[0:123] + "..."
 
     def get_absolute_url(self):
-        return f'news/{self.id}'
+        return f'/news/{self.id}'
 
 
 class Comment(models.Model):
