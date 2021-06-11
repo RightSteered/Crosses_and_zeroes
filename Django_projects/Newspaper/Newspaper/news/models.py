@@ -50,6 +50,9 @@ class Post(models.Model):
     def preview(self):
         return self.text[0:123] + "..."
 
+    def get_absolute_url(self):
+        return f'news/{self.id}'
+
 
 class Comment(models.Model):
     commentPost = models.ForeignKey(Post, on_delete=models.CASCADE)

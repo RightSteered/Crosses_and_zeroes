@@ -23,5 +23,5 @@ urlpatterns = [
     path('categories/', CatList.as_view()),
     path('authors/<int:pk>', AuthorDesc.as_view()),
     path('news/<int:pk>', PostView.as_view()),
-    path('news/add/', NewPost.as_view())
+    path('news/add/', CreatePost.as_view())
 ]

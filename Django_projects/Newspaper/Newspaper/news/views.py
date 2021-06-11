@@ -1,5 +1,5 @@
 from django.shortcuts import render
-from django.views.generic import ListView, DetailView, CreateView
+from django.views.generic import ListView, DetailView, CreateView, DeleteView, UpdateView
 from .models import Author, Post, Category, Comment
 from django.core.paginator import Paginator
 from .filters import PostFilter
@@ -51,7 +51,7 @@ class Comments(DetailView):
     context_object_name = 'comments'
 
 
-class NewPost(ListView):
+class CreatePost(ListView):
     model = Post
     template_name = 'newpost.html'
 
@@ -63,3 +63,7 @@ class NewPost(ListView):
         newpost = Post(title = title, text=text)
         newpost.save()
         return super().get(request, *args, **kwargs)
+
+
+# class DeletePost(DeleteView):
+

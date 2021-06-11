@@ -14,13 +14,14 @@
 </form>
     <h1>Последние статьи</h1>
     <h3>Всего статей: {{ posts | length }}</h3>
+    <a href="add"><h3>Написать статью</h3></a>
 <hr> {% if posts %}
 {% for post in filter.qs %}
 <table>
     <tr>
     <td>
 
-        <h1>{{ post.title }}</h1>
+        <a href="{{post.id}}"> <h1>{{ post.title | censor}}</h1></a>
         <p style="text-align: left;">{{ post.created | date:'d M Y, H:m'}} {{post.author.user_name}}</p>
         <h2>{{ post.text | truncatewords:20 }}</h2>
         <br>
@@ -48,21 +49,6 @@
         {% endif %}
     </span>
 </div>
-<form method="POST">
-    {% csrf_token %}
-    <select name="postCategory" size="1">
-        {% for cat in category.cat_id %}
-        <option value="cat_id.id">
-        {{ cat_id.name }}
-        </option>
-        {% endfor %}
-    </select>
-    <label for="">Заголовок</label>
-    <input name="title" type="text"> <br>
-    <label for="text">Текст статьи</label>
-    <input name="text" type="text" size="110">
-    <input type="submit", value="Опубликовать">
 
-</form>
 
 {% endblock content %}

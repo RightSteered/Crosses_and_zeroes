@@ -4,7 +4,7 @@ register = template.Library()
 
 
 @register.filter
-def censor(text='post.text'):
+def censor(word):
     wordfilter_list = [
         '6ля', '6лядь', '6лять', 'b3ъeб', 'cock', 'cunt', 'e6aль', 'ebal', 'eblan', 'eбaл', 'eбaть', 'eбyч', 'eбать',
         'eбёт',
@@ -111,7 +111,6 @@ def censor(text='post.text'):
         'чмырь', 'шалава', 'шалавой', 'шараёбиться', 'шлюха', 'шлюхой', 'шлюшка', 'ябывает'
     ]
 
-    for word in text:
-        if word in wordfilter_list:
-            word = '(CENSORED)'
-        return word
+    for c in wordfilter_list:
+        word = word.replace(c, '(CENSORED)')
+    return word
