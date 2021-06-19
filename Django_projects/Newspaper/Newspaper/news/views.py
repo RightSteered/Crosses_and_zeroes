@@ -1,10 +1,13 @@
 from django.shortcuts import render
-from django.views.generic import ListView, DetailView, CreateView, DeleteView, UpdateView
+from django.views.generic import ListView, DetailView, CreateView, DeleteView, UpdateView, TemplateView
 from .models import Author, Post, Category, Comment
 from django.core.paginator import Paginator
 from .filters import PostFilter
 import datetime
-from .forms import Newpost
+from .forms import *
+from django.contrib.auth.decorators import login_required
+from django.contrib.auth.mixins import LoginRequiredMixin
+from django.utils.decorators import method_decorator
 
 
 class PostList(ListView):
@@ -20,6 +23,7 @@ class PostList(ListView):
         context['filter'] = PostFilter(self.request.GET, queryset=self.get_queryset())
         return context
 
+    @login_required()
     def new(self, request, *args, **kwargs):
         form = self.form_class(request.POST)
         if form.is_valid:
@@ -43,6 +47,7 @@ class AuthorDesc(DetailView):
     model = Author
     template_name = 'author.html'
     context_object_name = 'author'
+    queryset = Author.objects.all()
 
 
 class CatList(ListView):
@@ -56,13 +61,13 @@ class Comments(DetailView):
     context_object_name = 'comments'
 
 
-class CreatePost(CreateView):
+class CreatePost(LoginRequiredMixin, CreateView):
     form_class = Newpost
     template_name = 'newpost.html'
     queryset = Post.objects.all()
 
 
-class EditPost(UpdateView):
+class EditPost(LoginRequiredMixin, UpdateView):
     model = Post
     template_name = 'newpost.html'
     form_class = Newpost
@@ -73,11 +78,12 @@ class EditPost(UpdateView):
         return Post.objects.get(pk=id)
 
 
-class DeletePost(DeleteView):
+class DeletePost(LoginRequiredMixin, DeleteView):
     model = Post
     template_name = 'delpost.html'
     queryset = Post.objects.all()
     success_url = '/news/'
+
 
 
 

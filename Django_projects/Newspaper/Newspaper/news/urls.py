@@ -25,5 +25,12 @@ urlpatterns = [
     path('news/<int:pk>', PostView.as_view()),
     path('news/add/', CreatePost.as_view()),
     path('news/edit/<int:pk>', EditPost.as_view(), name='newpost'),
-    path('news/delete/<int:pk>', DeletePost.as_view(), name='delpost')
+    path('news/delete/<int:pk>', DeletePost.as_view(), name='delpost'),
+    path('login/', TemplateView.as_view(), name='login'),
+    path('', include('signup.urls')),
+    path('', include('protect.urls')),
+    path('sign/', include('signup.urls')),
+    path('accounts/', include('allauth.urls')),
+    path('accounts/login', include('allauth.urls')),
+
 ]
