@@ -5,6 +5,9 @@
 {% endblock title %}
 {% block content %}
 <h2>Профиль пользователя {{request.user.username}}</h2>
+{% if is_not_author %}
+<button><a href="sign/upgrade/">Стать автором</a> </button>
+{% endif %}
 
 <button> <a href="sign/logout/">Выйти</a> </button>
 {% endblock content %}

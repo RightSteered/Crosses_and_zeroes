@@ -3,5 +3,5 @@ from .views import IndexView
 
 urlpatterns = [
     path('accounts/login', include('allauth.urls')),
-    # path('', IndexView.as_view())
+    path('', IndexView.as_view())
 ]
