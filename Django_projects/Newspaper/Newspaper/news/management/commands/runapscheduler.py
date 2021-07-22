@@ -20,7 +20,7 @@ logger = logging.getLogger(__name__)
 def my_job():
     date = datetime.date.today() - datetime.timedelta(days=7)
     wposts = Post.objects.filter(created__gte=date)
-    for post in wposts:
+    for post in wposts.objects.all():
         for cat in post.postCategory.all():
             for user in cat.cat_sub.all():
                 print (user)

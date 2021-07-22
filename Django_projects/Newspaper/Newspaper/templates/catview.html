@@ -10,7 +10,8 @@
 <hr>
 {% for cat in filter %}
 <h1>Все посты в категории {{ cat.cat_id }}</h1><br>
-{% if user in cat.cat_sub %}
+{% if user in cat.cat_sub.all %}
+<h3>Вы подписаны на эту категорию</h3>
 <form action="{% url 'subscribe' cat.pk %}" method="post">
     {% csrf_token %}
     <button  type="submit" name = "cat_id" value={{cat.id}}>Отписаться</button>
@@ -34,10 +35,9 @@
         <p style="text-align: left;"><a href="{% url 'newpost' post.id %}">Редактировать</a>
             <a href="{% url 'delpost' post.id %}">Удалить</a> </p>
         <h2>{{ post.text | truncatewords:20 }}</h2><br>
-        {% for cat in category %}
+        <p style="text-align: right;">{% for cat in post.postCategory.all %}{{cat}}{% endfor %}</p>
 
-        <p style="text-align: right;">{{ cat }}</p>
-        {% endfor %}
+
         <br>
 
     </td>
