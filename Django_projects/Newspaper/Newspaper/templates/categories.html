@@ -5,11 +5,15 @@
 {% endblock title %}
 
 {% block content %}
-<hr> {% if categories %}
+<hr>
+<h1>Все категории</h1>
+{% if categories %}
 {% for category in categories %}
 <table>
   <tr>
-    <td> <{{category.cat_id}}<br></td>
+    <td><a href="{{category.id}}"> {{ category.cat_id }}</a><br></td>
+
+
   </tr>
 </table>
 {% endfor %}

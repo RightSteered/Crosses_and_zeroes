@@ -1,13 +1,15 @@
-from django.shortcuts import render
-from django.views.generic import ListView, DetailView, CreateView, DeleteView, UpdateView, TemplateView
-from .models import Author, Post, Category, Comment
+from django.shortcuts import render, redirect, get_object_or_404, reverse
+from django.views.generic import ListView, DetailView, CreateView, DeleteView, UpdateView, View, TemplateView
+from .models import *
 from django.core.paginator import Paginator
 from .filters import PostFilter
 import datetime
 from .forms import *
 from django.contrib.auth.decorators import login_required
-from django.contrib.auth.mixins import LoginRequiredMixin
+from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMixin
 from django.utils.decorators import method_decorator
+from django.core.mail import send_mail, EmailMultiAlternatives
+from django.template.loader import render_to_string
 
 
 class PostList(ListView):
@@ -54,6 +56,22 @@ class CatList(ListView):
     model = Category
     template_name = 'categories.html'
     context_object_name = 'categories'
+    queryset = Category.objects.all().order_by('cat_id')
+
+
+class CatView(ListView):
+    model = PostCategory
+    template_name = 'catview.html'
+    context_object_name = 'posts'
+
+    def get_context_data(self, **kwargs):
+        context = super(CatView, self).get_context_data(**kwargs)
+        context['category'] = Category.objects.all()
+        context['filter'] = Category.objects.filter(id=self.kwargs['pk'])
+        return context
+
+    def get_queryset(self):
+        return Post.objects.filter(postCategory=self.kwargs['pk']).order_by('-created')
 
 
 class Comments(DetailView):
@@ -67,6 +85,8 @@ class CreatePost(LoginRequiredMixin, CreateView):
     queryset = Post.objects.all()
 
 
+
+
 class EditPost(LoginRequiredMixin, UpdateView):
     model = Post
     template_name = 'newpost.html'
@@ -74,8 +94,8 @@ class EditPost(LoginRequiredMixin, UpdateView):
     queryset = Post.objects.all()
 
     def get_post(self, **kwargs):
-        id = self.kwargs.get('pk')
-        return Post.objects.get(pk=id)
+        post_id = self.kwargs.get('pk')
+        return Post.objects.get(pk=post_id)
 
 
 class DeletePost(LoginRequiredMixin, DeleteView):
@@ -85,9 +105,22 @@ class DeletePost(LoginRequiredMixin, DeleteView):
     success_url = '/news/'
 
 
+class Subscribe(LoginRequiredMixin, View):
+    def post(self, request, **kwargs):
+        user = request.user
+        category = get_object_or_404(Category, id=kwargs['pk'])
+        if category.cat_sub.filter(username=request.user).exists():
+            category.cat_sub.remove(user)
+        else:
+            category.cat_sub.add(user)
+
+        return redirect(request.META['HTTP_REFERER'])
 
 
 
 
-# class DeletePost(DeleteView):
+
+
+
+
 

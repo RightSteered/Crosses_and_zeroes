@@ -1,31 +1,43 @@
 {% extends 'flatpages/default.html' %}
 
-{% load custom_filters %}
-
 {% block title %}
-Последние статьи
+{% for cat in filter %}
+Все посты в категории {{cat.cat_id}}
+{% endfor %}
 {% endblock title %}
 
 {% block content %}
-<form method="GET">
-    {{ filter.form }}
-    <input type="submit" value="Поиск">
+<hr>
+{% for cat in filter %}
+<h1>Все посты в категории {{ cat.cat_id }}</h1><br>
+{% if user in cat.cat_sub %}
+<form action="{% url 'subscribe' cat.pk %}" method="post">
+    {% csrf_token %}
+    <button  type="submit" name = "cat_id" value={{cat.id}}>Отписаться</button>
 </form>
-    <h1>Последние статьи</h1>
-    <h3>Всего статей: {{ posts | length }}</h3>
-    <a href="add"><h3>Написать статью</h3></a>
-<hr> {% if posts %}
-{% for post in filter.qs %}
+{% else %}
+<form action="{% url 'subscribe' cat.pk %}" method="post">
+    {% csrf_token %}
+    <button type="submit" name = "cat_id" value={{cat.id}}>Подписаться</button>
+</form>
+{% endif %}
+{% endfor %}
+
+{% if posts %}
+{% for post in posts %}
 <table>
     <tr>
     <td>
 
-        <p style="text-align: left;"><a href="{{ post.id }}">{{ post.title | censor}}</a></p>
+        <a href="/news/{{ post.id }}"> <h1>{{ post.title}}</h1></a>
         <p style="text-align: left;">{{ post.created | date:'d M Y, H:m'}} {{post.author.user_name}}</p>
         <p style="text-align: left;"><a href="{% url 'newpost' post.id %}">Редактировать</a>
             <a href="{% url 'delpost' post.id %}">Удалить</a> </p>
         <h2>{{ post.text | truncatewords:20 }}</h2><br>
-        <p style="text-align: right;">{% for cat in post.postCategory.all %}{{cat}}{% endfor %}</p>
+        {% for cat in category %}
+
+        <p style="text-align: right;">{{ cat }}</p>
+        {% endfor %}
         <br>
 
     </td>
@@ -51,6 +63,4 @@
         {% endif %}
     </span>
 </div>
-
-
 {% endblock content %}

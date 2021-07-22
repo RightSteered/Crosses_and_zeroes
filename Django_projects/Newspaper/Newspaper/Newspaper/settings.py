@@ -51,7 +51,14 @@ INSTALLED_APPS = [
     'allauth.account',
     'allauth.socialaccount',
     'allauth.socialaccount.providers.google',
+    'django_apscheduler',
+
+
+
+
 ]
+
+DEFAULT_FROM_EMAIL = 'fixator@list.ru'
 
 SITE_ID = 1
 
@@ -93,7 +100,7 @@ ACCOUNT_EMAIL_REQUIRED = True
 ACCOUNT_UNIQUE_EMAIL = True
 ACCOUNT_USERNAME_REQUIRED = False
 ACCOUNT_AUTHENTICATION_METHOD = 'email'
-ACCOUNT_EMAIL_VERIFICATION = 'none'
+ACCOUNT_EMAIL_VERIFICATION = 'mandatory'
 
 LOGIN_URL = 'accounts/login/'
 LOGIN_REDIRECT_URL = '/'
@@ -101,6 +108,9 @@ LOGIN_REDIRECT_URL = '/'
 ACCOUNT_FORMS = {'signup': 'news.forms.CommonSignup'}
 
 WSGI_APPLICATION = 'Newspaper.wsgi.application'
+
+APSCHEDULER_DATETIME_FORMAT = "N j, Y, f:s a"
+APSCHEDULER_RUN_NOW_TIMEOUT = 25
 
 
 # Database
@@ -161,3 +171,9 @@ STATICFILES_DIRS = [
 # https://docs.djangoproject.com/en/3.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+EMAIL_HOST = 'smtp.mail.ru'
+EMAIL_PORT = '465'
+EMAIL_HOST_USER = 'fixator@list.ru'
+EMAIL_HOST_PASSWORD = 'A6qvVnHtE6lQjZkRzAm2'
+EMAIL_USE_SSL = True

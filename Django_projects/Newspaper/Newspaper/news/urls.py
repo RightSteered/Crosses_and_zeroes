@@ -21,6 +21,8 @@ urlpatterns = [
     path('news/', PostList.as_view()),
     path('authors/', AuthorList.as_view()),
     path('categories/', CatList.as_view()),
+    path('categories/<int:pk>', CatView.as_view(), name='catview'),
+    path('categories/subscribe/<int:pk>', Subscribe.as_view(), name='subscribe'),
     path('authors/<int:pk>', AuthorDesc.as_view()),
     path('news/<int:pk>', PostView.as_view()),
     path('news/add/', CreatePost.as_view()),
@@ -32,5 +34,7 @@ urlpatterns = [
     path('sign/', include('signup.urls')),
     path('accounts/', include('allauth.urls')),
     path('accounts/login', include('allauth.urls')),
+    path('news/postslimit', include('django.contrib.flatpages.urls')),
+
 
 ]

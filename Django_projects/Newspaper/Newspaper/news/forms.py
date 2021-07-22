@@ -1,30 +1,18 @@
 from django.forms import ModelForm
-from .models import Post, Author
+from .models import Post, Author, Category
 from allauth.account.forms import SignupForm
 from django.contrib.auth.models import Group
+
 
 class Newpost(ModelForm):
     class Meta:
         model = Post
         fields = (
+            'postCategory',
             'title',
             'text'
         )
 
-class Login(ModelForm):
-    class Meta:
-        model = Author
-        fields = (
-
-        )
-
-class Registration(ModelForm):
-    class Meta:
-        model = Author
-        fields = (
-            'user_name',
-
-        )
 
 class CommonSignup(SignupForm):
     def save(self, request):
