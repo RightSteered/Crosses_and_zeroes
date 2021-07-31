@@ -37,6 +37,17 @@ class PostView(DetailView):
     template_name = 'postread.html'
     queryset = Post.objects.all()
 
+    def get_object(self, *args, **kwargs):
+        obj = cache.get(f'news-{self.kwargs["pk"]}', None)
+        if not obj:
+            obj = super().get_object(queryset=self.queryset)
+            cache.set(f'news-{self.kwargs["pk"]}', obj)
+        return obj
+
+    def comment_show(self, **kwargs):
+        comments = Comment.objects.get(commentPost=self.kwargs['pk']).order_by('-id')
+        return comments
+
 
 class AuthorList(ListView):
     model = Author
@@ -85,8 +96,6 @@ class CreatePost(LoginRequiredMixin, CreateView):
     queryset = Post.objects.all()
 
 
-
-
 class EditPost(LoginRequiredMixin, UpdateView):
     model = Post
     template_name = 'newpost.html'
@@ -115,12 +124,3 @@ class Subscribe(LoginRequiredMixin, View):
             category.cat_sub.add(user)
 
         return redirect(request.META['HTTP_REFERER'])
-
-
-
-
-
-
-
-
-

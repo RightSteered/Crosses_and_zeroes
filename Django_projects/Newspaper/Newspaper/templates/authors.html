@@ -10,7 +10,7 @@
 {% for author in authors %}
 <table>
   <tr>
-    <td> {{author.user_name}} </td><td>{{author.user_rating}} </td><br>
+    <td> <a href="{{author.id}}">{{author.user_name}}</a> </td><td>{{author.user_rating}} </td><br>
   </tr>
 </table>
 {% endfor %}

@@ -14,17 +14,18 @@ Including another URLconf
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
 from django.contrib import admin
+from django.views.decorators.cache import cache_page
 from django.urls import path, include
 from .views import *
 
 urlpatterns = [
-    path('news/', PostList.as_view()),
+    path('news/', cache_page(60*1)(PostList.as_view())),
     path('authors/', AuthorList.as_view()),
-    path('categories/', CatList.as_view()),
+    path('categories/', cache_page(60*10)(CatList.as_view())),
     path('categories/<int:pk>', CatView.as_view(), name='catview'),
     path('categories/subscribe/<int:pk>', Subscribe.as_view(), name='subscribe'),
     path('authors/<int:pk>', AuthorDesc.as_view()),
-    path('news/<int:pk>', PostView.as_view()),
+    path('news/<int:pk>', cache_page(60*10)(PostView.as_view())),
     path('news/add/', CreatePost.as_view()),
     path('news/edit/<int:pk>', EditPost.as_view(), name='newpost'),
     path('news/delete/<int:pk>', DeletePost.as_view(), name='delpost'),

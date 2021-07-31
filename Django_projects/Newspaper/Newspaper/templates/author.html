@@ -1,0 +1,66 @@
+{% extends 'flatpages/default.html' %}
+
+{% block title %}
+{% for cat in filter %}
+Все посты в категории {{cat.cat_id}}
+{% endfor %}
+{% endblock title %}
+
+{% block content %}
+<hr>
+{% for cat in filter %}
+<h1>Все посты в категории {{ cat.cat_id }}</h1><br>
+{% if user in cat.cat_sub.all %}
+<h3>Вы подписаны на эту категорию</h3>
+<form action="{% url 'subscribe' cat.pk %}" method="post">
+    {% csrf_token %}
+    <button  type="submit" name = "cat_id" value={{cat.id}}>Отписаться</button>
+</form>
+{% else %}
+<form action="{% url 'subscribe' cat.pk %}" method="post">
+    {% csrf_token %}
+    <button type="submit" name = "cat_id" value={{cat.id}}>Подписаться</button>
+</form>
+{% endif %}
+{% endfor %}
+
+{% if posts %}
+{% for post in posts %}
+<table>
+    <tr>
+    <td>
+
+        <a href="/news/{{ post.id }}"> <h1>{{ post.title}}</h1></a>
+        <p style="text-align: left;">{{ post.created | date:'d M Y, H:m'}} {{post.author.user_name}}</p>
+        <p style="text-align: left;"><a href="{% url 'newpost' post.id %}">Редактировать</a>
+            <a href="{% url 'delpost' post.id %}">Удалить</a> </p>
+        <h2>{{ post.text | truncatewords:20 }}</h2><br>
+        <p style="text-align: right;">{% for cat in post.postCategory.all %}{{cat}}{% endfor %}</p>
+
+
+        <br>
+
+    </td>
+
+    </tr>
+</table>
+{% endfor %}
+{% endif %}
+<div class="pagination">
+    <span class="step-links">
+        {% if page_obj.has_previous %}
+            <a href="?page=1">&laquo; first</a>
+            <a href="?page={{ page_obj.previous_page_number }}">previous</a>
+        {% endif %}
+
+        <span class="current">
+            Страница {{ page_obj.number }} из {{ page_obj.paginator.num_pages }}.
+        </span>
+
+        {% if page_obj.has_next %}
+            <a href="?page={{ page_obj.next_page_number }}">next</a>
+            <a href="?page={{ page_obj.paginator.num_pages }}">last &raquo;</a>
+        {% endif %}
+    </span>
+</div>
+{% endblock content %}

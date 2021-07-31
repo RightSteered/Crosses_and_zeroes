@@ -183,3 +183,10 @@ EMAIL_PORT = '465'
 EMAIL_HOST_USER = 'fixator@list.ru'
 EMAIL_HOST_PASSWORD = 'A6qvVnHtE6lQjZkRzAm2'
 EMAIL_USE_SSL = True
+
+CACHES = {
+    'default': {
+        'BACKEND': 'django.core.cache.backends.filebased.FileBasedCache',
+        'LOCATION': os.path.join(BASE_DIR, 'cache_files'),
+    }
+}

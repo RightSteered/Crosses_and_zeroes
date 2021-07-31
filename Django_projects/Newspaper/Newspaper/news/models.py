@@ -1,6 +1,7 @@
 from django.db import models
 from django.contrib.auth.models import User
 from django.db.models import Sum
+from django.core.cache import cache
 from django.contrib.auth.decorators import login_required
 
 
@@ -61,6 +62,10 @@ class Post(models.Model):
     def showcat(self):
         if self.postCategory:
             return str([postCategory.cat_id for postCategory in self.postCategory.all()])
+
+    def save(self, *args, **kwargs):
+        super().save(*args, **kwargs)
+        cache.delete(f'news-{self.pk}')
 
 
     def get_absolute_url(self):
