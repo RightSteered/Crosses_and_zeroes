@@ -1,0 +1,59 @@
+{% extends 'flatpages/default.html' %}
+
+
+{% block title %}
+Главная страница
+{% endblock title %}
+
+{% block content %}
+<form method="GET">
+    {{ filter.form }}
+    <input type="submit" value="Поиск">
+</form>
+    <h1>Все объявления</h1>
+    <h3>Всего объявлений: {{ posts | length }}</h3>
+    <a href="/create"><h3>Написать объявление</h3></a>
+<hr> {% if posts %}
+{% for el in filter.qs %}
+<table>
+    <tr>
+    <td>
+
+        <p style="text-align: left;"><a href="{{ el.id }}"><h2>{{ el.title }}</h2></a></p>
+        <p style="text-align: left;">{{ el.created | date:'d M Y  H:i'}} {{el.author.user_name}}</p>
+        <p style="text-align: left;"><a href="{% url 'newpost' el.id %}">Редактировать</a>
+            <a href="{% url 'delpost' el.id %}">Удалить</a> </p>
+        <h2>{{ el.text | truncatewords:20 }}</h2><br>
+        <p style="text-align: right;">{% for cat in el.category.all %}{{cat}}{% endfor %}</p>
+        <br>
+
+    </td>
+
+    </tr>
+</table>
+{% endfor %}
+{% else %}
+<p style="text-align: center;">Здесь пока ничего нет.</p>
+<p style="text-align: center;">Вы можете быть первым!</p>
+<p style="text-align: center;"><img src="https://izobrazhenie.net/photo/1280-95-1/1428_960411654.jpg" alt="" width="1280" height="800" /></p>
+{% endif %}
+<div class="pagination">
+    <span class="step-links">
+        {% if page_obj.has_previous %}
+            <a href="?page=1">&laquo; first</a>
+            <a href="?page={{ page_obj.previous_page_number }}">previous</a>
+        {% endif %}
+
+        <span class="current">
+            Страница {{ page_obj.number }} из {{ page_obj.paginator.num_pages }}.
+        </span>
+
+        {% if page_obj.has_next %}
+            <a href="?page={{ page_obj.next_page_number }}">next</a>
+            <a href="?page={{ page_obj.paginator.num_pages }}">last &raquo;</a>
+        {% endif %}
+    </span>
+</div>
+
+
+{% endblock content %}
