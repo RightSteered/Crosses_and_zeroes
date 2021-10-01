@@ -1,5 +1,5 @@
 from django_filters import FilterSet, DateFilter, CharFilter, OrderingFilter
-from .models import Post
+from .models import Post, Author
 from django.forms import DateInput
 
 
@@ -17,7 +17,7 @@ class PostFilter(FilterSet):
         fields = (
             'title',
             'author',
-            'category',
+            'postCategory',
             'date'
         )
 

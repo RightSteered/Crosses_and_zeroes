@@ -1,4 +1,4 @@
-"""bboard URL Configuration
+"""Newspaper URL Configuration
 
 The `urlpatterns` list routes URLs to views. For more information please see:
     https://docs.djangoproject.com/en/3.2/topics/http/urls/
@@ -14,14 +14,29 @@ Including another URLconf
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
 from django.contrib import admin
+from django.views.decorators.cache import cache_page
 from django.urls import path, include
 from .views import *
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('pages/', include('django.contrib.flatpages.urls')),
-    path('sign/', include('sign.urls')),
+    path('home/', cache_page(60*1)(PostList.as_view())),
+    path('authors/', AuthorList.as_view()),
+    path('categories/', cache_page(60*10)(CatList.as_view())),
+    path('categories/<int:pk>', CatView.as_view(), name='catview'),
+    path('categories/subscribe/<int:pk>', Subscribe.as_view(), name='subscribe'),
+    path('authors/<int:pk>', AuthorDesc.as_view()),
+    path('news/<int:pk>', cache_page(60*10)(PostView.as_view())),
+    path('news/add/', CreatePost.as_view()),
+    path('news/edit/<int:pk>', EditPost.as_view(), name='newpost'),
+    path('news/delete/<int:pk>', DeletePost.as_view(), name='delpost'),
+    path('login/', TemplateView.as_view(), name='login'),
+    path('', include('sign.urls')),
     path('', include('protect.urls')),
-    path('home/', PostList.as_view()),
-    path('create/', CreatePost.as_view())
+    path('sign/', include('sign.urls')),
+    path('accounts/', include('allauth.urls')),
+    path('accounts/login', include('allauth.urls')),
+    path('news/postslimit', include('django.contrib.flatpages.urls')),
+
+
 ]

@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<h2>Добрый день, {{user}}! За прошедшую неделю в интересующих Вас категориях
+    были опубликованы статьи:
+    {% for category in inst.postCategory.all %}
+    {{ category.cat_id}}
+    {% endfor %}
+    </h2><br>
+<a href="/news/{{post.objects.last}}"> <h1>{{inst.title}}</h1><br></a>
+{% for inst in wposts %}
+<h2>{{inst.title}}</h2><br>
+<h3>{{inst.text | truncatewords:20}}</h3>
+{% endfor %}
+</body>
+</html>

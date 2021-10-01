@@ -1,11 +1,16 @@
-from django.shortcuts import redirect, get_object_or_404
-from django.views.generic import ListView, DetailView, CreateView, DeleteView, UpdateView, View
+from django.shortcuts import render, redirect, get_object_or_404, reverse
+from django.views.generic import ListView, DetailView, CreateView, DeleteView, UpdateView, View, TemplateView
 from .models import *
+from itertools import chain
+from django.core.paginator import Paginator
 from .filters import PostFilter
-from .forms import Newpost, Respond
 import datetime
+from .forms import *
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMixin
+from django.utils.decorators import method_decorator
+from django.core.mail import send_mail, EmailMultiAlternatives
+from django.template.loader import render_to_string
 
 
 class PostList(ListView):
@@ -30,23 +35,72 @@ class PostList(ListView):
 
 
 class PostView(DetailView):
-    model = Post
-    template_name = 'post.html'
-    context_object_name = 'posts'
+    template_name = 'postread.html'
     queryset = Post.objects.all()
+    context = 'post'
 
     def get_context_data(self, **kwargs):
         context = super(PostView, self).get_context_data(**kwargs)
         context['post'] = Post.objects.all()
         context['filter'] = Post.objects.filter(id=self.kwargs['pk'])
-        context['comments'] = Response.objects.all()
-        context['pcomm'] = Response.objects.filter(post=self.kwargs['pk'])
+        context['comments'] = Comment.objects.all()
+        context['pcomm'] = Comment.objects.filter(commentPost=self.kwargs['pk'])
         return context
 
+    def get_object(self, *args, **kwargs):
+        obj = cache.get(f'news-{self.kwargs["pk"]}', None)
+        if not obj:
+            obj = super().get_object(queryset=self.queryset)
+            cache.set(f'news-{self.kwargs["pk"]}', obj)
+        return obj
 
-    def response_show(self, **kwargs):
-        responses = Response.objects.filter(post=self.kwargs['pk']).order_by('-id')
-        return responses
+    def comment_show(self, **kwargs):
+        comments = Comment.objects.filter(commentPost=self.kwargs['pk']).order_by('-id')
+        return comments
+
+
+class AuthorList(ListView):
+    model = Author
+    template_name = 'authors.html'
+    context_object_name = 'authors'
+    queryset = Author.objects.all().order_by('-user_rating')
+
+
+class AuthorDesc(DetailView):
+    model = Author
+    template_name = 'author.html'
+    context_object_name = 'author'
+    queryset = Author.objects.all()
+
+
+class CatList(ListView):
+    model = Category
+    template_name = 'categories.html'
+    context_object_name = 'categories'
+    queryset = Category.objects.all().order_by('cat_id')
+
+
+class CatView(ListView):
+    model = PostCategory
+    template_name = 'catview.html'
+    context_object_name = 'posts'
+
+    def get_context_data(self, **kwargs):
+        context = super(CatView, self).get_context_data(**kwargs)
+        context['category'] = Category.objects.all()
+        context['filter'] = Category.objects.filter(id=self.kwargs['pk'])
+        return context
+
+    def get_queryset(self):
+        return Post.objects.filter(postCategory=self.kwargs['pk']).order_by('-created')
+
+
+class Comments(DetailView):
+    model = Comment
+    context_object_name = 'comments'
+
+    def get_queryset(self):
+        return Comments.objects.filter(commentPost=self.kwargs['pk']).order_by('id')
 
 
 class CreatePost(LoginRequiredMixin, CreateView):
@@ -55,7 +109,7 @@ class CreatePost(LoginRequiredMixin, CreateView):
     queryset = Post.objects.all()
 
 
-class PostEdit(LoginRequiredMixin, UpdateView):
+class EditPost(LoginRequiredMixin, UpdateView):
     model = Post
     template_name = 'newpost.html'
     form_class = Newpost
@@ -66,12 +120,20 @@ class PostEdit(LoginRequiredMixin, UpdateView):
         return Post.objects.get(pk=post_id)
 
 
-class CreateResponse(LoginRequiredMixin, CreateView):
-    form_class = Respond
-    template_name = 'respond.html'
-
-    def create_response(self, request, args, **kwargs):
-        context = super(CreateResponse, self).get_context_data(**kwargs)
-        context['post'] = Post.objects.filter(id=self.kwargs['pk'])
+class DeletePost(LoginRequiredMixin, DeleteView):
+    model = Post
+    template_name = 'delpost.html'
+    queryset = Post.objects.all()
+    success_url = '/news/'
 
 
+class Subscribe(LoginRequiredMixin, View):
+    def post(self, request, **kwargs):
+        user = request.user
+        category = get_object_or_404(Category, id=kwargs['pk'])
+        if category.cat_sub.filter(username=request.user).exists():
+            category.cat_sub.remove(user)
+        else:
+            category.cat_sub.add(user)
+
+        return redirect(request.META['HTTP_REFERER'])

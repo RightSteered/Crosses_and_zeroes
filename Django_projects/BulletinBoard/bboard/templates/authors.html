@@ -1,0 +1,18 @@
+{% extends 'flatpages/default.html' %}
+
+{% block title %}
+Наши авторы
+{% endblock title %}
+
+{% block content %}
+<h1>Наши авторы</h1>
+<hr> {% if authors %}
+{% for author in authors %}
+<table>
+  <tr>
+    <td> <a href="{{author.id}}">{{author.user_name}}</a> </td><td>{{author.user_rating}} </td><br>
+  </tr>
+</table>
+{% endfor %}
+{% endif %}
+{% endblock content %}
