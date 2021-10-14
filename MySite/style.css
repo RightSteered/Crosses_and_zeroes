@@ -1,0 +1,65 @@
+.header {
+    background-color: rgb(153, 185, 212);
+    font-family: Verdana, Geneva, Tahoma, sans-serif;
+    font-weight: 400;
+    height: 100px;
+    
+}
+.main-link {
+    text-decoration: none;
+    color: #000;
+    -webkit-transition: all 1s ease;
+    transition: all 1s ease;
+}
+.main-link:hover {
+    color:palevioletred;
+}
+
+.link {
+    color: ivory;
+    font-size: large;
+    padding: 20px 0px;
+    text-decoration: none;
+    -webkit-transition: all 1s ease;
+    transition: all 1s ease;
+
+}
+.link:hover {
+    color: rgb(241, 38, 38);
+}
+
+
+
+.body {
+    font-family: Verdana, Geneva, Tahoma, sans-serif;
+    font-size: medium;
+    background-color: white;
+    -ms-hyphens: auto;
+    -webkit-hyphens: auto;
+    hyphens: auto;
+    }
+
+.body-text {
+    font-family: Verdana, Geneva, Tahoma, sans-serif;
+    font-size: larger;
+    background-color: white;
+    -ms-hyphens: auto;
+    -webkit-hyphens: auto;
+    hyphens: auto;
+    line-height: 25px;
+
+}
+
+.text-link {
+    text-decoration: none;
+}
+
+.right {
+    float: right;
+    margin: 0 1em 1em 0;
+}
+
+.left {
+    float: left;
+    margin: 0 1em 1em 0;
+}
